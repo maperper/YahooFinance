@@ -53,27 +53,30 @@ counting_rows = dict()
 #    symbol = stock_list[ii] #  Uncomment this two lines if you want to check how this script works with fewer iterations.
 
 for symbol in stock_list:
-    link = 'https://finance.yahoo.com/quote/{}/history?period1={}&period2={}&interval=1d&filter=history&frequency=1d'.format(symbol, start_date, end_date)
-    session = requests.Session()
-    response = session.get(link)
-    text = str(response.content)
-    match = re.search(crumble_regex, text)
-    crumbs = match.group(1)
-    cookie = session.cookies.get_dict()
-    # get crumbs
-    text = str(response.content)
-    match = re.search(crumble_regex, text)
-    crumbs = match.group(1)  
-    # get cookie    
-    cookie = session.cookies.get_dict()    
-    url = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=1d&events=history&crumb=%s" % (symbol, start_date, end_date, crumbs)
-    r = requests.get(url, cookies=session.cookies.get_dict(), timeout=5, stream=True)
-    out = r.text
-    filename = '%s_start_date=%s_end_date=%s.csv' % (symbol, start_date_.replace('/','-'), end_date_.replace('/','-'))
-    # Counting the rows for deleting the ones that not have the same than others.
-    counting_rows[filename] = len(out.splitlines())
-    with open('csv/' + filename,'w') as file:
-        file.write(out)
+    try:
+        link = 'https://finance.yahoo.com/quote/{}/history?period1={}&period2={}&interval=1d&filter=history&frequency=1d'.format(symbol, start_date, end_date)
+        session = requests.Session()
+        response = session.get(link)
+        text = str(response.content)
+        match = re.search(crumble_regex, text)
+        crumbs = match.group(1)
+        cookie = session.cookies.get_dict()
+        # get crumbs
+        text = str(response.content)
+        match = re.search(crumble_regex, text)
+        crumbs = match.group(1)  
+        # get cookie    
+        cookie = session.cookies.get_dict()    
+        url = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=1d&events=history&crumb=%s" % (symbol, start_date, end_date, crumbs)
+        r = requests.get(url, cookies=session.cookies.get_dict(), timeout=5, stream=True)
+        out = r.text
+        filename = '%s_start_date=%s_end_date=%s.csv' % (symbol, start_date_.replace('/','-'), end_date_.replace('/','-'))
+        # Counting the rows for deleting the ones that not have the same than others.
+        counting_rows[filename] = len(out.splitlines())
+        with open('csv/' + filename,'w') as file:
+            file.write(out)
+    except:
+        pass
 
 # Deleting csv files
 dict_symbol_name = dict()
