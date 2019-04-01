@@ -5,7 +5,7 @@
 	value that can reach will be one and the minimum zero.
 '''
 
-def generating_prize_file(:
+def generating_prize_file():
 	import os
 	import pandas as pd
 	import json
